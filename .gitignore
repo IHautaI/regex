@@ -1,0 +1,7 @@
+*.rkt
+*.o
+*.py
+regex/
+*.txt
+*.scala
+
