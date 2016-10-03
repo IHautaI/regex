@@ -34,6 +34,8 @@ class And: public regex {
   }
 
 public:
+  friend auto and_flatten(std::set<re_ptr>& ch, regex* z, std::set<regex*>& se) -> void;
+
   friend auto build_And(std::set<regex*>& x, Cache& cache)-> regex*;
 
   friend auto build_And(std::initializer_list<regex*> x, Cache& cache)-> regex*;
@@ -53,6 +55,8 @@ public:
 
 
 //------------OR------------------------
+
+auto or_flatten(std::set<re_ptr>& ch, regex* r, std::set<regex*>& se, regex* z)-> void;
 
 auto build_Or(std::set<regex*>& x, Cache& cache)-> regex*;
 
@@ -74,6 +78,8 @@ class Or: public regex {
   }
 
 public:
+  friend auto or_flatten(std::set<re_ptr>& ch, regex* r, std::set<regex*>& se, regex* z)-> void;
+
   friend auto build_Or(std::set<regex*>& x, Cache& cache)-> regex*;
 
   friend auto build_Or(std::initializer_list<regex*> x, Cache& cache)-> regex*;

@@ -7,6 +7,20 @@ namespace compound {
 
   //-------AND-------------------
 
+  auto and_flatten(std::set<re_ptr>& ch, regex* z, std::set<regex*>& se)-> void {
+    auto f = std::find_if(ch.begin(), ch.end(), [&](const re_ptr& p){return p.get() == z;});
+
+    if(f != ch.end()){
+      for(auto& k : ((And*) (*f).get())->members){
+        se.insert(k);
+      }
+    }
+    else {
+      se.insert(z);
+    }
+  }
+
+
   auto build_And(std::set<regex*>& s, Cache& cache)-> regex* {
     auto se = std::set<regex*>();
     auto ze = basic::build_Zero();
@@ -17,16 +31,7 @@ namespace compound {
         return z;
       }
 
-      auto f = std::find_if(cache["and"].begin(), cache["and"].end(), [&](const re_ptr& p){return p.get() == z;});
-
-      if(f != cache["and"].end()){
-        for(auto& k : ((And*) (*f).get())->members){
-          se.insert(k);
-        }
-      }
-      else {
-        se.insert(z);
-      }
+      and_flatten(cache["and"], z, se);
     }
 
     if(se.empty()){
@@ -48,16 +53,7 @@ namespace compound {
         return ze;
       }
 
-      auto f = std::find_if(cache["and"].begin(), cache["and"].end(), [&](const re_ptr& p){return p.get() == z;});
-
-      if(f != cache["and"].end()){
-        for(auto& k : ((And*) (*f).get())->members){
-          se.insert(k);
-        }
-      }
-      else {
-        se.insert(z);
-      }
+      and_flatten(cache["and"], z, se);
     }
 
     if(se.empty()){
@@ -88,16 +84,7 @@ namespace compound {
         return ze;
       }
 
-      auto f = std::find_if(cache["and"].begin(), cache["and"].end(), [&](re_ptr& p){return p.get() = *z;});
-
-      if(f != cache["and"].end()){
-        for(auto& k : ((And*) (*f).get())->members){
-          se.insert(k);
-        }
-      }
-      else {
-        se.insert(*z);
-      }
+      and_flatten(cache["and"], *z, se);
     }
 
     if(se.empty()){
@@ -139,6 +126,22 @@ namespace compound {
 
   //-------OR--------------------
 
+  
+  auto or_flatten(std::set<re_ptr>& ch, regex* r, std::set<regex*>& se, regex* z)-> void {
+    auto f = std::find_if(ch.begin(), ch.end(), [&](const re_ptr& x){return x.get() == r;});
+
+    if(f != ch.end()){
+      for(auto& k : ((Or*) (*f).get())->members){
+        se.insert(k);
+      }
+    }
+    else {
+      if(r != z){
+        se.insert(r);
+      }
+    }
+  }
+
   auto build_Or(std::set<regex*>& s, Cache& cache)-> regex* {
     auto se = std::set<regex*>();
     auto z = basic::build_Zero();
@@ -149,17 +152,7 @@ namespace compound {
         return nz;
       }
 
-      auto f = std::find_if(cache["or"].begin(), cache["or"].end(), [&](const re_ptr& x){return x.get() == r;});
-      if(f != cache["or"].end()){
-        for(auto& k : ((Or*) (*f).get())->members){
-          se.insert(k);
-        }
-      }
-      else {
-        if(r != z){
-          se.insert(r);
-        }
-      }
+      or_flatten(cache["or"], r, se, z);
     }
 
     if(se.empty()){ // empty -> Zero
@@ -195,17 +188,7 @@ namespace compound {
         return nz;
       }
 
-      auto f = std::find_if(cache["or"].begin(), cache["or"].end(), [&](const re_ptr& x){return x.get() == r;});
-      if(f != cache["or"].end()){
-        for(auto& k : ((Or*) (*f).get())->members){
-          se.insert(k);
-        }
-      }
-      else {
-        if(r != z){
-          se.insert(r);
-        }
-      }
+      or_flatten(cache["or"], r, se, z);
     }
 
     if(se.empty()){ // empty -> Zero
@@ -240,17 +223,7 @@ namespace compound {
         return nz;
       }
 
-      auto f = std::find_if(cache["or"].begin(), cache["or"].end(), [&](const re_ptr& x){return x.get() == r;});
-      if(f != cache["or"].end()){
-        for(auto& k : ((Or*) (*f).get())->members){
-          se.insert(k);
-        }
-      }
-      else {
-        if(r != z){
-          se.insert(r);
-        }
-      }
+      or_flatten(cache["or"], r, se, z);
     }
 
     if(se.empty()){
