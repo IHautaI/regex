@@ -127,6 +127,8 @@ class Rep: public regex {
 public:
 
   friend auto build_Rep(regex* reg, size_t low, size_t high, Cache& cache)-> regex*;
+  friend auto build_Star(regex* reg, size_t low, Cache& cache)-> regex*;
+  friend auto build_Star(regex* reg, Cache& cache)-> regex*;
 
   auto derivative(char& c, Cache& cache)-> regex*;
 

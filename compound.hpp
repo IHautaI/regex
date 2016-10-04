@@ -4,7 +4,6 @@
 #include "regex.hpp"
 
 namespace re {
-
 namespace compound {
 
 typedef std::shared_ptr<regex> re_ptr;

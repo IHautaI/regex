@@ -1,6 +1,7 @@
 #include "regex.hpp"
 #include "basic.hpp"
 #include "compound.hpp"
+
 using namespace re;
 namespace cmp = compound;
 
@@ -10,12 +11,7 @@ typedef std::shared_ptr<regex> re_ptr;
 typedef std::map<std::string, std::set<re_ptr>> Cache;
 
 int main(){
-  auto cache = Cache();
-  cache["charset"] = std::set<re_ptr>();
-  cache["and"] = std::set<re_ptr>();
-  cache["or"] = std::set<re_ptr>();
-  cache["cat"] = std::set<re_ptr>();
-  cache["not"] = std::set<re_ptr>();
+  auto cache = make_cache();
 
   auto chr = 'e';
   char chr2 = 'a';

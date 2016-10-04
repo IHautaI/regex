@@ -30,6 +30,11 @@ public:
 
 };
 
+typedef std::shared_ptr<regex> re_ptr;
+typedef std::map<std::string, std::set<re_ptr>> Cache;
+
+auto make_cache()-> Cache;
+
 }
 
 #endif

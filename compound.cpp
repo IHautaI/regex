@@ -141,39 +141,6 @@ namespace compound {
     }
   }
 
-  auto build_Or(regex* a, regex* b, Cache& cache)-> regex* {
-    auto se = std::set<regex*>();
-    auto z = basic::build_Zero();
-    auto nz = basic::build_Not(z, cache);
-
-    if(a == nz || b == nz){
-      return nz;
-    }
-
-    or_flatten(cache["or"], a, se, z);
-    or_flatten(cache["or"], b, se, z);
-
-    if(se.empty()){
-      return z;
-    }
-
-    for(auto& x : cache["or"]){ // check if cached
-      auto y = (Or*) x.get();
-      if(y->same_as(se)){
-        return x.get();
-      }
-    }
-
-    if(se.size() == 1){ // one entry -> the entry
-      return *(se.begin());
-    }
-
-    auto* an = new Or(se);
-    auto ans = std::shared_ptr<regex>(an);
-    cache["or"].insert(ans);
-    return an;
-  }
-
   auto build_Or(std::set<regex*>& s, Cache& cache)-> regex* {
     auto se = std::set<regex*>();
     auto z = basic::build_Zero();
@@ -209,74 +176,23 @@ namespace compound {
     return a;
   }
 
+  auto build_Or(regex* a, regex* b, Cache& cache)-> regex* {
+    auto se = std::set<regex*>{a, b};
+    return build_Or(se, cache);
+  }
 
   auto build_Or(std::initializer_list<regex*> s, Cache& cache)-> regex* {
-    auto se = std::set<regex*>();
-    auto z = basic::build_Zero();
-    auto nz = basic::build_Not(z, cache);
-
-    for(auto& r : s){
-      if(r == nz){
-        return nz;
-      }
-
-      or_flatten(cache["or"], r, se, z);
-    }
-
-    if(se.empty()){ // empty -> Zero
-      return z;
-    }
-
-    for(auto& x : cache["or"]){ // check if cached
-      auto y = (Or*) x.get();
-      if(y->same_as(se)){
-        return x.get();
-      }
-    }
-
-    if(se.size() == 1){ // one entry -> the entry
-      return *(se.begin());
-    }
-
-    auto* a = new Or(se);
-    auto an = std::shared_ptr<regex>(a);
-    cache["or"].insert(an);
-    return a;
+    auto se = std::set<regex*>(s);
+    return build_Or(se, cache);
   }
 
   template<class It>
   auto build_Or(It start, It end, Cache& cache)-> regex* {
     auto se = std::set<regex*>();
-    auto z = basic::build_Zero();
-    auto nz = basic::build_Not(z, cache);
-
-    for(auto r = start; r != end; r++){
-      if(r == nz){
-        return nz;
-      }
-
-      or_flatten(cache["or"], r, se, z);
+    for(auto x = start; x != end; x++){
+      se.insert(x);
     }
-
-    if(se.empty()){
-      return z;
-    }
-
-    for(auto& x : cache["or"]){
-      auto y = (Or*) x.get();
-      if(y->same_as(se)){
-        return x.get();
-      }
-    }
-
-    if(se.size() == 1){
-      return *(se.begin());
-    }
-
-    auto a = new Or(se);
-    auto an = std::shared_ptr<regex>(a);
-    cache["or"].insert(an);
-    return a;
+    return build_Or(se, cache);
   }
 
   auto Or::toString()-> std::string {

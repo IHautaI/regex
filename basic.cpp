@@ -166,6 +166,14 @@ auto build_Rep(regex* reg, size_t low, size_t high, Cache& cache)-> regex* {
   return a;
 }
 
+auto build_Star(regex* reg, size_t low, Cache& cache)-> regex* {
+    return build_Rep(reg, low, SIZE_MAX, cache);
+}
+
+auto build_Star(regex* reg, Cache& cache)-> regex* {
+    return build_Rep(reg, 0, SIZE_MAX, cache);
+}
+
 auto Rep::toString()-> std::string {
   return "(" + this->r->toString() + "){" + std::to_string(this->low) + "," + std::to_string(this->high) + "}";
 }
@@ -175,7 +183,7 @@ auto Rep::derivative(char& c, Cache& cache)-> regex* {
   auto low = (this->low > 0)? this->low - 1: 0;
   auto high = (this->high == SIZE_MAX)? SIZE_MAX : this->high - 1;
   auto new_re = build_Rep(this->r, low, high, cache);
-  
+
   return compound::build_Cat(d, new_re, cache);
 }
 
