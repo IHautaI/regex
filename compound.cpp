@@ -1,7 +1,6 @@
 #include "basic.hpp"
 #include "compound.hpp"
 #include <algorithm>
-
 namespace re {
 namespace compound {
 
@@ -126,7 +125,7 @@ namespace compound {
 
   //-------OR--------------------
 
-  
+
   auto or_flatten(std::set<re_ptr>& ch, regex* r, std::set<regex*>& se, regex* z)-> void {
     auto f = std::find_if(ch.begin(), ch.end(), [&](const re_ptr& x){return x.get() == r;});
 
@@ -140,6 +139,39 @@ namespace compound {
         se.insert(r);
       }
     }
+  }
+
+  auto build_Or(regex* a, regex* b, Cache& cache)-> regex* {
+    auto se = std::set<regex*>();
+    auto z = basic::build_Zero();
+    auto nz = basic::build_Not(z, cache);
+
+    if(a == nz || b == nz){
+      return nz;
+    }
+
+    or_flatten(cache["or"], a, se, z);
+    or_flatten(cache["or"], b, se, z);
+
+    if(se.empty()){
+      return z;
+    }
+
+    for(auto& x : cache["or"]){ // check if cached
+      auto y = (Or*) x.get();
+      if(y->same_as(se)){
+        return x.get();
+      }
+    }
+
+    if(se.size() == 1){ // one entry -> the entry
+      return *(se.begin());
+    }
+
+    auto* an = new Or(se);
+    auto ans = std::shared_ptr<regex>(an);
+    cache["or"].insert(ans);
+    return an;
   }
 
   auto build_Or(std::set<regex*>& s, Cache& cache)-> regex* {
@@ -272,16 +304,18 @@ namespace compound {
     auto z = basic::build_Zero();
     auto e = basic::build_Empty();
 
+    if(a == z || b == z){
+      return z;
+    }
+
     if(a == e){
       return b;
     }
+
     if(b == e){
       return a;
     }
 
-    if(a == z || b == z){
-      return z;
-    }
 
     for(auto& x : cache["cat"]){
       auto y = (Cat*) x.get();
@@ -304,7 +338,6 @@ namespace compound {
   auto Cat::derivative(char& c, Cache& cache)-> regex* {
     auto l = this->left->derivative(c, cache);
     auto d = build_Cat(l, this->right, cache);
-
     if(this->left->nullable){
       return build_Or(d, this->right, cache);
     }

@@ -103,11 +103,6 @@ regex* Empty::e = 0;
 //---------------NOT---------------------
 
 auto build_Not(regex* reg, Cache& cache)-> regex* {
-  auto e = build_Empty();
-  if(reg == e){
-    return build_Zero();
-  }
-
   for(auto& x : cache["not"]){
     auto y = (Not*) x.get();
 
@@ -143,6 +138,21 @@ auto Not::derivative(char& c, Cache& cache)-> regex* {
 //-------------REP-------------------
 
 auto build_Rep(regex* reg, size_t low, size_t high, Cache& cache)-> regex* {
+  auto e = build_Empty();
+  auto z = build_Zero();
+
+  if(reg == e){
+    return e;
+  }
+
+  if(low == 0 && (high == 0 || reg == z)){
+    return e;
+  }
+
+  if(low == 1 && high == 1){
+    return reg;
+  }
+
   for(auto& x : cache["rep"]){
     auto y = (Rep*) x.get();
     if(y->same_as(reg) && low == y->low && high == y->high){
@@ -162,8 +172,11 @@ auto Rep::toString()-> std::string {
 
 auto Rep::derivative(char& c, Cache& cache)-> regex* {
   auto d = this->r->derivative(c, cache);
-  auto re = build_Rep(this->r, this->low - 1, ((this->high == SIZE_MAX)? SIZE_MAX : this->high - 1), cache);
-  return compound::build_Cat(d, re, cache);
+  auto low = (this->low > 0)? this->low - 1: 0;
+  auto high = (this->high == SIZE_MAX)? SIZE_MAX : this->high - 1;
+  auto new_re = build_Rep(this->r, low, high, cache);
+  
+  return compound::build_Cat(d, new_re, cache);
 }
 
 

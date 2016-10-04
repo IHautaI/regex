@@ -29,7 +29,7 @@ class And: public regex {
   , members(x)
   {
     for(auto& x : this->members){
-      this->nullable &= x->nullable;
+      this->nullable = this->nullable && x->nullable;
     }
   }
 
@@ -58,6 +58,8 @@ public:
 
 auto or_flatten(std::set<re_ptr>& ch, regex* r, std::set<regex*>& se, regex* z)-> void;
 
+auto build_Or(regex* a, regex* b, Cache& cache)-> regex*;
+
 auto build_Or(std::set<regex*>& x, Cache& cache)-> regex*;
 
 auto build_Or(std::initializer_list<regex*> x, Cache& cache)-> regex*;
@@ -73,12 +75,14 @@ class Or: public regex {
   , members(x)
   {
     for(auto& x : this->members){
-      this->nullable |= x->nullable;
+      this->nullable = this->nullable || x->nullable;
     }
   }
 
 public:
   friend auto or_flatten(std::set<re_ptr>& ch, regex* r, std::set<regex*>& se, regex* z)-> void;
+
+  friend auto build_Or(regex* a, regex* b, Cache& cache)-> regex*;
 
   friend auto build_Or(std::set<regex*>& x, Cache& cache)-> regex*;
 
