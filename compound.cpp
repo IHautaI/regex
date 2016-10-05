@@ -123,6 +123,13 @@ namespace compound {
     return build_And(s, cache);
   }
 
+
+  auto And::get_chars(std::set<char>& chrs, std::set<char>& nots)-> void {
+    for(auto& x : this->members){
+      x->get_chars(chrs, nots);
+    }
+  }
+
   //-------OR--------------------
 
 
@@ -214,6 +221,12 @@ namespace compound {
     return build_Or(s, cache);
   }
 
+  auto Or::get_chars(std::set<char>& chrs, std::set<char>& nots)-> void {
+    for(auto& x : this->members){
+      x->get_chars(chrs, nots);
+    }
+  }
+
   //-------CAT-------------------
 
   auto build_Cat(regex* a, regex* b, Cache& cache)-> regex* {
@@ -259,6 +272,17 @@ namespace compound {
     }
     else {
       return d;
+    }
+  }
+
+
+  auto Cat::get_chars(std::set<char>& chrs, std::set<char>& nots)-> void {
+    if(this->nullable){
+      this->left->get_chars(chrs, nots);
+      this->right->get_chars(chrs, nots);
+    }
+    else {
+      this->left->get_chars(chrs, nots);
     }
   }
 

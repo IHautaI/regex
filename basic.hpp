@@ -28,6 +28,8 @@ public:
 
   auto toString()-> std::string;
 
+  auto get_chars(std::set<char>& chrs, std::set<char>& nots)-> void;
+
   friend auto build_Zero()-> regex*;
 };
 
@@ -49,6 +51,8 @@ public:
 
   auto toString()-> std::string;
 
+  auto get_chars(std::set<char>& chrs, std::set<char>& nots)-> void;
+
   friend auto build_Empty()-> regex*;
 };
 
@@ -57,9 +61,9 @@ auto build_CharSet(const std::string& s, Cache& cache)-> regex*;
 auto build_CharSet(const char* str, Cache& cache)-> regex*;
 
 class CharSet : public regex {
-  std::set<int> members;
+  std::set<char> members;
 
-  CharSet(std::set<int>& x)
+  CharSet(std::set<char>& x)
   : regex(false)
   , members(x)
   {}
@@ -73,7 +77,9 @@ public:
 
   virtual auto toString()-> std::string;
 
-  auto same_as(std::set<int>& mem)-> bool {
+  auto get_chars(std::set<char>& chrs, std::set<char>& nots)-> void;
+
+  auto same_as(std::set<char>& mem)-> bool {
     return this->members == mem;
   }
 
@@ -99,6 +105,7 @@ public:
 
   auto derivative(char& c, Cache& cache)-> regex*;
 
+  auto get_chars(std::set<char>& chrs, std::set<char>& nots)-> void;
 
   auto toString()->std::string;
 
@@ -133,6 +140,8 @@ public:
   auto derivative(char& c, Cache& cache)-> regex*;
 
   auto toString()-> std::string;
+
+  auto get_chars(std::set<char>& chrs, std::set<char>& nots)-> void;
 
   auto same_as(regex* r){
     return this->r == r;

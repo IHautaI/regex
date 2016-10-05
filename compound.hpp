@@ -44,6 +44,7 @@ public:
 
   auto derivative(char& c, Cache& cache)-> regex*;
 
+  auto get_chars(std::set<char>& s, std::set<char>& nots)-> void;
 
   auto same_as(const std::set<regex*>& mem){
     return mem == this->members;
@@ -92,6 +93,8 @@ public:
 
   auto derivative(char& c, Cache& cache)-> regex*;
 
+  auto get_chars(std::set<char>& s, std::set<char>& nots)-> void;
+
   auto same_as(std::set<regex*>& mem){
     return mem == this->members;
   }
@@ -127,6 +130,9 @@ public:
   }
 
   auto toString()-> std::string;
+
+  auto get_chars(std::set<char>& s, std::set<char>& nots)-> void;
+
 };
 
 }

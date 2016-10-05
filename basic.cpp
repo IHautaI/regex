@@ -20,6 +20,9 @@ regex* Empty::e = 0;
     return std::string("(NULL)");
   }
 
+
+  auto Zero::get_chars(std::set<char>& s, std::set<char>& nots)-> void {}
+
   //---------EMPTY----------------------------------
 
   auto build_Empty()-> regex* {
@@ -34,14 +37,15 @@ regex* Empty::e = 0;
     return std::string("\'\'");
   }
 
+  auto Empty::get_chars(std::set<char>& s, std::set<char>& nots)-> void {}
 
   //---------CHARSET--------------------------------
 
   auto build_CharSet(const std::string& s, Cache& cache)-> regex* {
-    auto mem = std::set<int>();
+    auto mem = std::set<char>();
 
     for(auto& c : s){
-      mem.insert(c); // implicit conv char -> int
+      mem.insert(c);
     }
 
     for(auto& x : cache["charset"]){
@@ -100,6 +104,13 @@ regex* Empty::e = 0;
   }
 
 
+  auto CharSet::get_chars(std::set<char>& s, std::set<char>& nots)-> void {
+    for(auto& x : this->members){
+      s.insert(x);
+    }
+  }
+
+
 //---------------NOT---------------------
 
 auto build_Not(regex* reg, Cache& cache)-> regex* {
@@ -134,6 +145,10 @@ auto Not::derivative(char& c, Cache& cache)-> regex* {
   return build_Not(d, cache);
 }
 
+
+auto Not::get_chars(std::set<char>& chrs, std::set<char>& nots)-> void {
+  this->r->get_chars(nots, chrs);
+}
 
 //-------------REP-------------------
 
@@ -187,6 +202,10 @@ auto Rep::derivative(char& c, Cache& cache)-> regex* {
   return compound::build_Cat(d, new_re, cache);
 }
 
+
+auto Rep::get_chars(std::set<char>& chrs, std::set<char>& nots)-> void {
+  this->r->get_chars(chrs, nots);
+}
 
 }
 }

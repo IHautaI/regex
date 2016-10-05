@@ -69,6 +69,19 @@ int main(){
   std::cout << e->derivative(chr, cache) << "\n";
   std::cout << e->derivative(chr2, cache) << "\n\n";
 
+  auto s = std::set<char>();
+  auto t = std::set<char>();
+  d->get_chars(s, t);
+
+  std::cout << "chars: \n";
+  for(auto& x : s){
+    std::cout << x;
+  }
+  std::cout << "\nnots: \n";
+  for(auto& x : t){
+    std::cout << x;
+  }
+  std::cout << "\n";
 
   std::cout << "\n" << "size: " << (cache["charset"].size() + cache["and"].size() + cache["or"].size() + cache["cat"].size() + cache["not"].size()) << "\n";
 }

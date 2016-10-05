@@ -23,6 +23,8 @@ public:
 
   virtual auto toString()-> std::string = 0;
 
+  virtual auto get_chars(std::set<char>& s, std::set<char>& nots)-> void = 0;
+
   friend std::ostream& operator<<(std::ostream& out, regex* x){
     out << x->toString();
     return out;
