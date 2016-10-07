@@ -4,6 +4,7 @@
 
 namespace re {
 namespace basic {
+  
 regex* Zero::z = 0;
 regex* Empty::e = 0;
 
@@ -79,7 +80,7 @@ regex* Empty::e = 0;
   }
 
 
-  auto build_Range(char& start, char& end, Cache& cache)-> regex* {
+  auto build_Range(char&& start, char&& end, Cache& cache)-> regex* {
 
     if(start <= end){
       auto mem = std::string("");

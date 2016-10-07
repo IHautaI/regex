@@ -85,7 +85,7 @@ public:
 
 };
 
-auto make_range(char& start, char& end)-> regex*;
+auto build_Range(char&& start, char&& end, Cache& cache)-> regex*;
 
 
 //-----------NOT---------------------

@@ -1,13 +1,15 @@
 VPATH = lib/
 CXX = clang++
 CPPFLAGS = -O3 --std=c++14 -Wall
-LSOBJS = regex.o basic.o compound.o
+OBJS = regex.o basic.o compound.o action.o dfa.o
 LDLIBS = -lstdc++
 
 
-all : test
+all : test dfa-test
 
-test : $(LSOBJS)
+test : $(OBJS)
+
+dfa-test : $(OBJS)
 
 clean: 
-	rm regex.o basic.o compound.o test
+	rm regex.o basic.o compound.o action.o test dfa.o dfa-test

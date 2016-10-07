@@ -1,6 +1,7 @@
 #include "basic.hpp"
 #include "compound.hpp"
 #include <algorithm>
+
 namespace re {
 namespace compound {
 
