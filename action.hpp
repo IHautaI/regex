@@ -24,18 +24,23 @@ public:
 
 typedef std::set<Action, comp> State;
 
+auto build_empty_state(Cache& cache){
+
+}
+
 
 template<class It>
-auto derive(It start, It end, char& c, Cache& cache)-> State {
-  auto res = State();
-  std::transform(start, end, std::inserter(res, res.begin()), [&](const Action& x){auto y = x.first->derivative(c, cache); return std::make_pair(y, x.second);});
+auto derive(It start, It end, char& c, Cache& cache)-> State* {
+  auto* res = new State();
+  std::transform(start, end, std::inserter(*res, res->begin()), [&](const Action& x){auto y = x.first->derivative(c, cache); return std::make_pair(y, x.second);});
 
   auto zero = basic::build_Zero();
 
-  auto z = std::find_if(res.begin(), res.end(), [&](const Action& x){return x.first != zero;});
+  auto z = std::find_if(res->begin(), res->end(), [&](const Action& x){return x.first != zero;});
 
-  if(z == res.end()){
-    return State();
+  if(z == res->end()){
+    auto* out = build_empty_state(cache);
+    return out;
   } else {
     return res;
   }
